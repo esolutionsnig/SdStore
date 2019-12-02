@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:sdstore/pages/home/page_holder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sdstore/utils/api.dart';
 
 import '../../components/color.dart';
 import '../../components/general.dart';
 import './login.dart';
-import '../home/homeScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -226,7 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         localStorage.setString('user', json.encode(body['user']));
         // Navigate to Home Page
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
+            context, MaterialPageRoute(builder: (context) => PageHolder()));
       } else {
         _showAlert(context, body['error'], body['message']);
       }

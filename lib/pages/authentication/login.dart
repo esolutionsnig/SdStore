@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:sdstore/pages/home/homeScreen.dart';
+import 'package:sdstore/pages/home/page_holder.dart';
 import 'package:sdstore/utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Check if token exists
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
-    print(token);
+    // print(token);
     if(token != null) {
       setState(() {
         _isLoggedIn = true;
@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Home(),
+          builder: (context) => PageHolder(),
         ));
     }
   }
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print('logged in');
         // Navigate to Home Page
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
+            context, MaterialPageRoute(builder: (context) => PageHolder()));
       } else {
         _showAlert(context, body['error'], body['message']);
       }

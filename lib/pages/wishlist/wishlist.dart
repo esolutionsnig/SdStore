@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sdstore/components/color.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key key}) : super(key: key);
+class WishListScreen extends StatefulWidget {
+  const WishListScreen({Key key}) : super(key: key);
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _WishListScreenState createState() => _WishListScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _WishListScreenState extends State<WishListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cwhite,
         title: Text(
-          "Home",
+          "My Wish List",
           style: TextStyle(
             color: cprimary
           ),
@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('This is just a demo shopping cart page')
+            Text('This is just a demo wish list page')
           ],
         ),
       ),

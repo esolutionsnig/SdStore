@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class CallApi {
   final String _url = 'https://xloutsourcingltd.com/sd/api/v1/';
@@ -29,15 +29,15 @@ class CallApi {
     'Accept': 'application/json',
   };
 
-  _setHeaders2() => {
-    'Content-type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer ' + _getToken()
-  };
+  // _setHeaders2() => {
+  //   'Content-type': 'application/json',
+  //   'Accept': 'application/json',
+  //   'Authorization': 'Bearer ' + _getToken()
+  // };
 
-  _getToken() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var token = localStorage.getString('token');
-    return token;
-  }
+  // _getToken() async {
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   var token = localStorage.getString('token');
+  //   return token;
+  // }
 }

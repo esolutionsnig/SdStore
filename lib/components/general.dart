@@ -4,6 +4,9 @@ import 'color.dart';
 
 import 'loadersmall.dart';
 
+// Dfine App Name
+const appName = "St.David's";
+
 // Header Image
 Widget header(String imageLocation) {
   return Container(

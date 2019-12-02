@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sdstore/components/color.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key key}) : super(key: key);
+class CartScreen extends StatefulWidget {
+  const CartScreen({Key key}) : super(key: key);
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _CartScreenState createState() => _CartScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cwhite,
         title: Text(
-          "Home",
+          "My Cart",
           style: TextStyle(
             color: cprimary
           ),

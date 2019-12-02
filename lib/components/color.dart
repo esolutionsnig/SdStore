@@ -10,3 +10,4 @@ const cwhite = Color(0xFFFFFFFF);
 const cred = Color(0xFFAF0000);
 const cgrey = Colors.black12;
 const cteal = Colors.teal;
+const cBodyColor = Color(0xFFE0E0E0);

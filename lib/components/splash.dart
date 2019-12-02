@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/Models/page_view_model.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
 
-import '../pages/login/login.dart';
+import '../pages/authentication/login.dart';
 import '../components/color.dart';
 
 class SplashScreen extends StatelessWidget {

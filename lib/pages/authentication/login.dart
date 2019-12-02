@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:sdstore/pages/home/homeScreen.dart';
+import 'package:sdstore/utils/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import '../../components/loader.dart';
 import '../../components/color.dart';
@@ -11,24 +16,52 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  String email;
-  String password;
+  // final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
+  String email, password, _emailError, _passwordError;
   bool _isLoading = false;
   ScaffoldState scaffoldState;
-  _showMsg(msg) {
-    final snackBar = SnackBar(
-      content: Text(msg),
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          // Some Code To Undo The Change
-        },
-      ),
+  Future _showAlert(BuildContext context, String title, String message) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type AlertDialog
+        return AlertDialog(
+        title: new Text(title),
+        content: new Text(message),
+        actions: <Widget>[
+          new FlatButton(onPressed: () => Navigator.pop(context), child: new Text('Ok'))
+        ],
+      );
+      }
     );
-    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    _checkedIfLoggedIn();
+    super.initState();
+  }
+
+  // Check if user is currently logged in
+  _checkedIfLoggedIn() async {
+    // Check if token exists
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    print(token);
+    if(token != null) {
+      setState(() {
+        _isLoggedIn = true;
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Home(),
+        ));
+    }
   }
 
   @override
@@ -53,186 +86,63 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: header("assets/loginbg.png"),
                       ),
                       title("SIGN IN"),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40.0),
-                        child: Text(
-                          "Email",
-                          style: TextStyle(color: Colors.grey, fontSize: 16.0),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey.withOpacity(0.5),
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: Row(
-                          children: <Widget>[
-                            new Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 15.0),
-                              child: Icon(
-                                Icons.email,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Container(
-                              height: 30.0,
-                              width: 1.0,
-                              color: Colors.grey.withOpacity(0.5),
-                              margin: const EdgeInsets.only(
-                                  left: 00.0, right: 10.0),
-                            ),
-                            new Expanded(
-                              child: TextField(
-                                controller: emailController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Enter your email address',
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40.0),
-                        child: Text(
-                          "Password",
-                          style: TextStyle(color: Colors.grey, fontSize: 16.0),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey.withOpacity(0.5),
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: Row(
-                          children: <Widget>[
-                            new Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 15.0),
-                              child: Icon(
-                                Icons.lock_open,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Container(
-                              height: 30.0,
-                              width: 1.0,
-                              color: Colors.grey.withOpacity(0.5),
-                              margin: const EdgeInsets.only(
-                                  left: 00.0, right: 10.0),
-                            ),
-                            new Expanded(
-                              child: TextField(
-                                controller: passwordController,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Enter your password',
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                      subTitle("Using your email address and password"),
+                      inputContainer(
+                          Icon(Icons.email, color: Colors.grey),
+                          _emailController,
+                          "Enter your email address",
+                          _emailError,
+                          false,
+                          TextInputType.emailAddress),
+                      inputContainer(
+                          Icon(Icons.lock_open, color: Colors.grey),
+                          _passwordController,
+                          "Enter your password",
+                          _passwordError,
+                          true,
+                          TextInputType.text),
                       Container(
                         margin: const EdgeInsets.only(top: 20.0),
                         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                        child: new Row(
+                        child: Row(
                           children: <Widget>[
-                            new Expanded(
-                              child: FlatButton(
-                                shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0)),
-                                splashColor: cprimary,
-                                color: cprimary,
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 20.0),
-                                      child: Text(
-                                        "LOGIN",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                    new Expanded(
-                                      child: Container(),
-                                    ),
-                                    new Transform.translate(
-                                      offset: Offset(15.0, 0.0),
-                                      child: new Container(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: FlatButton(
-                                          shape: new RoundedRectangleBorder(
-                                              borderRadius:
-                                                  new BorderRadius.circular(
-                                                      28.0)),
-                                          splashColor: cgold,
-                                          color: cgold,
-                                          child: Icon(
-                                            Icons.arrow_forward,
-                                            color: cwhite,
-                                          ),
-                                          onPressed: () => {},
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                onPressed: () => {},
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20.0),
-                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                        child: new Row(
-                          children: <Widget>[
-                            new Expanded(
-                              child: FlatButton(
-                                shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0)),
-                                color: Colors.transparent,
-                                child: Container(
-                                  padding: const EdgeInsets.only(left: 20.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "DON'T HAVE AN ACCOUNT?",
-                                    style: TextStyle(color: cprimary),
+                            Expanded(
+                              child: appButton(
+                                  cprimary,
+                                  cprimary,
+                                  Colors.black12,
+                                  _isLoading,
+                                  "Authenticating",
+                                  "Sign In",
+                                  cwhite,
+                                  cgold,
+                                  cgold,
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: cwhite,
                                   ),
-                                ),
-                                onPressed: () => {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => RegisterScreen(),
-                                      ))
-                                },
-                              ),
+                                  _handleSignIn),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20.0),
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: new Row(
+                          children: <Widget>[
+                            new Expanded(
+                              child: appFlatBtn("DON'T HAVE AN ACCOUNT?",
+                                  cprimary, _gotoSignUp),
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom)),
                 ],
               ),
             ),
@@ -240,6 +150,83 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     });
+  }
+
+  void _gotoSignUp() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegisterScreen(),
+        ));
+  }
+
+  // Handle Account Creation
+  void _handleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (_validated()) {
+      var data = {
+        'email': email,
+        'password': password,
+      };
+
+      // Make API call
+      var res = await CallApi().postData(data, 'signin');
+      var body = json.decode(res.body);
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', body['token']);
+        localStorage.setString('user', json.encode(body['user']));
+        print('logged in');
+        // Navigate to Home Page
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
+      } else {
+        _showAlert(context, body['error'], body['message']);
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // Validate Form
+  bool _validated() {
+    // registerReqObj = RegisterReqObj();
+
+    bool valid = true;
+
+    email = _emailController.text;
+    if (_emailController.text.isEmpty) {
+      valid = false;
+      _emailError = "Email address is required";
+    } else {
+      Pattern pattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp regex = new RegExp(pattern);
+      if (!regex.hasMatch(_emailController.text)) {
+        _emailError = "Enter a valid email address";
+      } else {
+        _emailError = null;
+      }
+    }
+
+    password = _passwordController.text;
+    if (_passwordController.text.isEmpty) {
+      valid = false;
+      _passwordError = "Password is required";
+    } else {
+      _passwordError = null;
+    }
+
+    return valid;
   }
 }
 

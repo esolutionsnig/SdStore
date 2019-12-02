@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sdstore/utils/api.dart';
 
 import '../../components/color.dart';
 import '../../components/general.dart';
 import './login.dart';
-// import '../../datamodel/register_req_obj.dart';
-// import 'package:validators/validators.dart';
-// import 'package:validators/sanitizers.dart';
+import '../home/homeScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -16,7 +15,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController _surnameController = new TextEditingController();
@@ -49,17 +48,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String authToken;
 
   ScaffoldState scaffoldState;
-  _showMsg(msg) {
-    final snackBar = SnackBar(
-      content: Text(msg),
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          // Some Code To Undo The Change
-        },
-      ),
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
+
+  Future _showAlert(BuildContext context, String title, String message) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type AlertDialog
+          return AlertDialog(
+            title: new Text(title),
+            content: new Text(message),
+            actions: <Widget>[
+              new FlatButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: new Text('Ok'))
+            ],
+          );
+        });
   }
 
   @override
@@ -84,12 +88,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: header("assets/registerbg.png"),
                       ),
                       title("SIGN UP"),
+                      subTitle("All fields are required"),
                       Form(
                         key: _formKey,
                         autovalidate: _autoValidate,
                         child: Column(
                           children: <Widget>[
-                            inputTitle("Surname"),
                             inputContainer(
                                 Icon(Icons.person_outline, color: Colors.grey),
                                 _surnameController,
@@ -200,11 +204,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   // Handle Account Creation
   void _handleSignUp() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     if (_validated()) {
+      setState(() {
+        _isLoading = true;
+      });
       var data = {
         'surname': surname,
         'firstname': firstname,
@@ -217,7 +220,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Make API call
       var res = await CallApi().postData(data, 'signup');
       var body = json.decode(res.body);
-      print(body);
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', body['token']);
+        localStorage.setString('user', json.encode(body['user']));
+        // Navigate to Home Page
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
+      } else {
+        _showAlert(context, body['error'], body['message']);
+      }
 
       setState(() {
         _isLoading = false;
@@ -226,11 +238,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _isLoading = false;
         _autoValidate = true;
-        _surnameError;
-        _firstnameError;
-        _emailError;
-        _passwordConfirmationError;
-        _passwordError;
       });
     }
   }
@@ -299,7 +306,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return valid;
   }
-
 }
 
 class HeaderClip {}

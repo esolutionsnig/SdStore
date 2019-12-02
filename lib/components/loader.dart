@@ -10,9 +10,9 @@ class Loader extends StatefulWidget {
 class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   // Define variables
   AnimationController controller;
-  Animation<double> animation_rotaion;
-  Animation<double> animation_radius_in;
-  Animation<double> animation_radius_out;
+  Animation<double> animationRotaion;
+  Animation<double> animationRadiusIn;
+  Animation<double> animationRadiusOut;
 
   final double initialRadius = 30.0;
 
@@ -25,19 +25,19 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
     controller =
         AnimationController(vsync: this, duration: Duration(seconds: 4));
     
-    animation_rotaion = Tween<double>(
+    animationRotaion = Tween<double>(
       begin: 0.0,
       end: 1.0
     ).animate(CurvedAnimation(parent: controller, curve: Interval(0.0, 1.0, curve: Curves.linear)));
 
-    animation_radius_in = Tween<double>(
+    animationRadiusIn = Tween<double>(
       begin: 1.0,
       end: 0.0,
     ).animate(CurvedAnimation(
         parent: controller,
         curve: Interval(0.75, 1.0, curve: Curves.elasticIn)));
 
-    animation_radius_out = Tween<double>(
+    animationRadiusOut = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
@@ -47,9 +47,9 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
     controller.addListener(() {
       setState(() {
         if (controller.value >= 0.75 && controller.value <= 1.0) {
-          radius = animation_radius_in.value * initialRadius;
+          radius = animationRadiusIn.value * initialRadius;
         } else if (controller.value >= 0.0 && controller.value <= 0.25) {
-          radius = animation_radius_out.value * initialRadius;
+          radius = animationRadiusOut.value * initialRadius;
         }
       });
     });
@@ -64,7 +64,7 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
       height: 100.0,
       child: Center(
         child: RotationTransition(
-          turns: animation_rotaion,
+          turns: animationRotaion,
           child: Stack(
             children: <Widget>[
               Dot(

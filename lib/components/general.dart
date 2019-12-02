@@ -27,7 +27,7 @@ Widget header(String imageLocation) {
 Widget title(String title) {
   return Center(
     child: Padding(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.only(top: 25.0, bottom: 5.0),
       child: Text(
         title,
         style: TextStyle(
@@ -37,14 +37,27 @@ Widget title(String title) {
   );
 }
 
+// Title
+Widget subTitle(String title) {
+  return Center(
+    child: Padding(
+      padding: EdgeInsets.only(top: 5.0, bottom: 30.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: cprimary, 
+          fontSize: 15.0
+        ),
+      ),
+    ),
+  );
+}
+
 // Input title
 Widget inputTitle(String title) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 40.0),
-    child: Text(
+  return Text(
       title,
       style: TextStyle(color: Colors.grey, fontSize: 16.0),
-    ),
   );
 }
 

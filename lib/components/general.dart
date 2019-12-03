@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sdstore/pages/home/homeScreen.dart';
 
 import 'color.dart';
 
@@ -6,6 +7,102 @@ import 'loadersmall.dart';
 
 // Dfine App Name
 const appName = "St.David's";
+
+Widget storeTitle(String mainTitle, String subTitle) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: <Widget>[
+      SizedBox(width: 45,),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            mainTitle,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 30
+            ),
+          ),
+          Text(
+            subTitle,
+            style: TextStyle(
+              fontWeight: FontWeight.w200,
+              fontSize: 20
+            ),
+          )
+        ],
+      )
+    ],
+  );
+}
+
+Widget searchBar() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Icon(Icons.search, color: cprimary),
+      SizedBox(width: 20,),
+      Expanded(
+        child: TextField(
+          decoration: InputDecoration(
+            hintText: "Search...",
+            contentPadding: EdgeInsets.symmetric(vertical: 10),
+            hintStyle: TextStyle(
+              color: Colors.black87
+            )
+          ),
+        ),
+      )
+    ],
+  );
+}
+
+Widget categories() {
+  return Container(
+    height: 185,
+    child: ListView(
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        CategoryListItem(
+          categoryIcon: Icons.bug_report,
+          categoryName: "Shoes",
+          availability: 12,
+          selected: true,
+        ),
+        CategoryListItem(
+          categoryIcon: Icons.bug_report,
+          categoryName: "Bags",
+          availability: 12,
+          selected: false,
+        ),
+        CategoryListItem(
+          categoryIcon: Icons.bug_report,
+          categoryName: "Boots",
+          availability: 12,
+          selected: false,
+        ),
+        CategoryListItem(
+          categoryIcon: Icons.bug_report,
+          categoryName: "Slip-Ons",
+          availability: 12,
+          selected: false,
+        ),
+        CategoryListItem(
+          categoryIcon: Icons.bug_report,
+          categoryName: "Wallets",
+          availability: 12,
+          selected: false,
+        ),
+        CategoryListItem(
+          categoryIcon: Icons.bug_report,
+          categoryName: "Belts",
+          availability: 12,
+          selected: false,
+        )
+      ],
+    ),
+  );
+}
 
 // Header Image
 Widget header(String imageLocation) {
